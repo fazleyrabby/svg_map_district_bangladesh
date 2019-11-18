@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>title</title>
+  </head>
+  <body>
+  <style>
+		body{
+			display: flex;
+		}
+		object{
+			display: flex;
+			align-content: center;
+			align-items: center;
+			position: relative;
+			height: 50em;
+			width: 50em;
+		}
+		#active_item {
+			text-align: center;
+			font: 24px Helvetica;
+			font-weight: bold;
+		}
+	</style>
+
+<div id="map">
+	<div id="active_item">Hover on Map</div>
+	<object data="bdmap.svg" type="image/svg+xml"></object>
+</div>
+
+<script>
+
+	//==================== #Change this to your own url for each division# =====================//
+		const divisionsUrl = [
+				Rongpur = 'https://en.wikipedia.org/wiki/Rangpur_District',
+				Rajshahi = 'https://en.wikipedia.org/wiki/Rajshahi_District',
+				Khulna = 'https://en.wikipedia.org/wiki/Khulna_District',
+				Barisal = 'https://en.wikipedia.org/wiki/Barisal_District',
+				Chittagong = 'https://en.wikipedia.org/wiki/Chittagong_District',
+				Sylhet = 'https://en.wikipedia.org/wiki/Sylhet_District',
+				Mymensingh = 'https://en.wikipedia.org/wiki/Mymensingh_District',
+				Dhaka = 'https://en.wikipedia.org/wiki/Dhaka_District'
+		]
+	//========================================================================//
+	//selecting the object tag
+	const map = document.querySelector('object');
+
+	//after loading map object
+	map.addEventListener("load",() => {
+	const mapObj =	map.contentDocument; //to get the svg elements of the map
+	const dataText = mapObj.querySelectorAll('[data-text]');   //text svg
+	const elements = mapObj.querySelectorAll('[data-url]');    //district svg
+	const activeItem = document.getElementById('active_item'); //active item div
+
+	//hover text colors
+	mapObj.addEventListener('mouseover', event => {
+		if (event.target.parentNode.id) {
+			let target = event.target.parentNode.id
+			activeItem.innerText = target
+			active(target)
+		}
+		else{
+			active(null)
+			activeItem.innerText = 'Hover on Map';
+		}	
+	})
+
+	//hover text colors
+	function active(target){
+		dataText.forEach(textColor => {
+			if( textColor.dataset.text == target) 
+			 {  
+				 textColor.style.cssText = 
+				 `stroke:black; 
+					stroke-width:1; 
+					fill: #fff;
+					--webkit-text-stroke: 1px black`;
+			 }else{
+					textColor.style.cssText = 
+					`fill: #111; 
+					--webkit-text-stroke: 1px white`;
+			 }  
+		})
+	}
+
+	//click event for each district
+	elements.forEach((event)=> {
+		event.addEventListener('click', () => { linkToUrl(event.dataset.url) } )
+	})
+
+	//URL to districts
+	function linkToUrl(event){
+		divisionsUrl.forEach( (division, key) => {
+			(event == key ? window.open(division , '_blank') : null);
+		})
+	}	
+	});
+
+</script>
+</body>
+</html>
